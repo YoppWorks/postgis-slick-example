@@ -6,7 +6,7 @@ import domain.Building
 import org.locationtech.jts.geom.Point
 import PostGISProfile.api._
 
-trait SlickSchema {
+object SlickSchema {
 
   class BuildingsTable(tag: Tag) extends Table[Building](tag, "buildings") {
     def id = column[UUID]("id", O.PrimaryKey)
