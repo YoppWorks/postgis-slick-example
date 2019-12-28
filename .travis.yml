@@ -1,0 +1,24 @@
+language: scala
+
+scala:
+  - 2.13.1
+
+jdk:
+  - openjdk13
+
+services:
+  - docker
+
+before_install:
+  - docker container run --env POSTGRES_DBNAME=gis --publish 127.0.0.1:25432:5432 --detach kartoza/postgis:12.0
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot/
+
+before_cache:
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete

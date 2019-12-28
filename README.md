@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/naderghanbari/postgis-slick-example.svg?branch=master)](https://travis-ci.com/naderghanbari/postgis-slick-example)
+
 # Domain Driven PostGIS and Slick
 
 This project is a showcase of using Postgres and PostGIS via Slick in a domain driven 
@@ -14,7 +16,7 @@ To see how things work in action, check the unit tests.
 
 ## Test
 
-    > docker run -p 25432:5432 --env POSTGRES_DBNAME=gis --name postgis3 kartoza/postgis:12.0 
+    > docker container run --env POSTGRES_DBNAME=gis --publish 127.0.0.1:25432:5432 --detach kartoza/postgis:12.0 
     > sbt test
 
 We use docker to run a PostGIS-enabled instance of Postgres. 
@@ -31,3 +33,4 @@ waste yor time on H2.
 [mdillon/postgis](https://hub.docker.com/r/mdillon/postgis) is another option but
 it does not support `PostGIS 3.0` at the moment.
 
+See [.travis.yml](.travis.yml) for more info.
