@@ -35,12 +35,21 @@ class SlickBuildingRepositoryTest
     }
 
     "should return existing buildings" in {
-      val coordinate = PointFactory.create(longitude = -73.9857f, latitude = 40.7484f)
-      val building = Building(id = UUID.randomUUID(), name = "Empire State", coordinate = coordinate)
+      val empireState = Building(
+        id = UUID.randomUUID(),
+        name = "Empire State",
+        coordinate = PointFactory.create(longitude = -73.9857f, latitude = 40.7484f),
+      )
+      val tajMahal = Building(
+        id = UUID.randomUUID(),
+        name = "Taj Mahal",
+        coordinate = PointFactory.create(longitude = 78.0421f, latitude = 27.1751f),
+      )
 
-      repo.save(building).futureValue shouldEqual building
+      repo.save(empireState).futureValue shouldEqual empireState
+      repo.save(tajMahal).futureValue shouldEqual tajMahal
       val result = repo.getAll.futureValue
-      result should contain theSameElementsAs (Seq(building))
+      result should contain theSameElementsAs Seq(empireState, tajMahal)
     }
 
   }
