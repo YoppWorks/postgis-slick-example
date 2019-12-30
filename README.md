@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/naderghanbari/postgis-slick-example.svg?branch=master)](https://travis-ci.com/naderghanbari/postgis-slick-example)
+[![Build Status](https://travis-ci.com/YoppWorks/postgis-slick-example.svg?branch=master)](https://travis-ci.com/YoppWorks/postgis-slick-example)
 
 # Domain Driven PostGIS and Slick
 
