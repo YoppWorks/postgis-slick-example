@@ -2,7 +2,7 @@ package domain
 
 import org.locationtech.jts.geom.{Coordinate, GeometryFactory, Point, PrecisionModel}
 
-object PointFactory {
+object CoordinateFactory {
 
   private val geometryFactory =
     new GeometryFactory(new PrecisionModel(), 4326)

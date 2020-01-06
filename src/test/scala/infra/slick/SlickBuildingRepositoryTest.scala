@@ -2,7 +2,7 @@ package infra.slick
 
 import java.util.UUID
 
-import domain.{Building, PointFactory}
+import domain.{Building, CoordinateFactory}
 import infra.slick.PostGISProfile.api._
 import infra.slick.SlickSchema.Buildings
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -26,7 +26,25 @@ class SlickBuildingRepositoryTest
 
   override def beforeAll() = db.run(SlickMigration.migrations())
 
-  after { db.run(Buildings.delete) }
+  before { db.run(Buildings.delete) }
+
+  val empireState = Building(
+    id = UUID.randomUUID(),
+    name = "Empire State",
+    coordinate = CoordinateFactory.create(longitude = -73.9857f, latitude = 40.7484f),
+  )
+
+  val tajMahal = Building(
+    id = UUID.randomUUID(),
+    name = "Taj Mahal",
+    coordinate = CoordinateFactory.create(longitude = 78.0421f, latitude = 27.1751f),
+  )
+
+  val canadianParliament = Building(
+    id = UUID.randomUUID(),
+    name = "Ottawa Parliament Hill",
+    coordinate = CoordinateFactory.create(longitude = -75.7009f, latitude = 45.4236f),
+  )
 
   "getAll" should {
 
@@ -35,21 +53,25 @@ class SlickBuildingRepositoryTest
     }
 
     "should return existing buildings" in {
-      val empireState = Building(
-        id = UUID.randomUUID(),
-        name = "Empire State",
-        coordinate = PointFactory.create(longitude = -73.9857f, latitude = 40.7484f),
-      )
-      val tajMahal = Building(
-        id = UUID.randomUUID(),
-        name = "Taj Mahal",
-        coordinate = PointFactory.create(longitude = 78.0421f, latitude = 27.1751f),
-      )
-
       repo.save(empireState).futureValue shouldEqual empireState
       repo.save(tajMahal).futureValue shouldEqual tajMahal
       val result = repo.getAll.futureValue
       result should contain theSameElementsAs Seq(empireState, tajMahal)
+    }
+
+  }
+
+  "getAllSortedByDistance" should {
+
+    "return empty initially regardless of the reference point" in {
+      repo.getAllSortedByDistance(canadianParliament.coordinate).futureValue shouldBe empty
+    }
+
+    "should return existing buildings in expected order" in {
+      repo.save(tajMahal).futureValue shouldEqual tajMahal
+      repo.save(empireState).futureValue shouldEqual empireState
+      val result = repo.getAllSortedByDistance(canadianParliament.coordinate).futureValue
+      result should contain theSameElementsInOrderAs Seq(empireState, tajMahal)
     }
 
   }
