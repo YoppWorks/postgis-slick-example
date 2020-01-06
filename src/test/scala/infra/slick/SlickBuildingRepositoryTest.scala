@@ -67,10 +67,39 @@ class SlickBuildingRepositoryTest
       repo.getAllSortedByDistance(canadianParliament.coordinate).futureValue shouldBe empty
     }
 
-    "should return existing buildings in expected order" in {
+    "return buildings in ascending order by distance to an external point" in {
       repo.save(tajMahal).futureValue shouldEqual tajMahal
       repo.save(empireState).futureValue shouldEqual empireState
       val result = repo.getAllSortedByDistance(canadianParliament.coordinate).futureValue
+      result should contain theSameElementsInOrderAs Seq(empireState, tajMahal)
+    }
+
+  }
+
+  "getAllWithinRadius" should {
+
+    "return empty initially regardless of the reference point and radius" in {
+      repo.getAllWithinRadius(canadianParliament.coordinate, 1000).futureValue shouldBe empty
+    }
+
+    "return empty when buildings are too far away" in {
+      repo.save(tajMahal).futureValue shouldEqual tajMahal
+      repo.save(empireState).futureValue shouldEqual empireState
+      val result = repo.getAllWithinRadius(canadianParliament.coordinate, 1000).futureValue
+      result shouldBe empty
+    }
+
+    "return only buildings within the radius" in {
+      repo.save(tajMahal).futureValue shouldEqual tajMahal
+      repo.save(empireState).futureValue shouldEqual empireState
+      val result = repo.getAllWithinRadius(canadianParliament.coordinate, 540 * 1000).futureValue
+      result should contain theSameElementsInOrderAs Seq(empireState)
+    }
+
+    "work for huge distances" in {
+      repo.save(empireState).futureValue shouldEqual empireState
+      repo.save(tajMahal).futureValue shouldEqual tajMahal
+      val result = repo.getAllWithinRadius(canadianParliament.coordinate, 11516.515f * 1000 ).futureValue
       result should contain theSameElementsInOrderAs Seq(empireState, tajMahal)
     }
 
